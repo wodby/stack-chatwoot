@@ -32,7 +32,7 @@ services:
             memory: 2000
   links:
   - name: db
-    service: pgvector
+    service: postgres
   - name: redis
     service: redis
   - name: storage
@@ -54,9 +54,9 @@ services:
           cpu: 2000
           memory: 2000
 
-- name: pgvector
-  title: PostgreSQL with pgvector
-  service: pgvector
+- name: postgres
+  title: PostgreSQL
+  service: postgres
   required: true
   env:
   - name: POSTGRES_DB_EXTENSIONS

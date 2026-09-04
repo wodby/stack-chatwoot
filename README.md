@@ -14,7 +14,7 @@ Deploy [Chatwoot](https://www.chatwoot.com/) on Kubernetes with Wodby.
 ## Service definitions
 
 - [Chatwoot service](https://github.com/wodby/service-chatwoot)
-- [PostgreSQL (pgvector) service](https://github.com/wodby/service-pgvector)
+- [PostgreSQL service](https://github.com/wodby/service-postgres)
 - [Redis service](https://github.com/wodby/service-redis)
 - [Ganesha NFS provisioner service](https://github.com/wodby/service-nfs-provisioner)
 - [OpenSMTPD service](https://github.com/wodby/service-opensmtpd)
@@ -23,8 +23,8 @@ Deploy [Chatwoot](https://www.chatwoot.com/) on Kubernetes with Wodby.
 
 | Component / service | Default configuration |
 | --- | --- |
-| Chatwoot<br>`chatwoot` | required; enabled by default; volumes: `storage` 20 GB; links: `db` → `pgvector`, `redis` → `redis`, `storage` → `storage`, `sendmail` → `opensmtpd` |
-| PostgreSQL with pgvector<br>`pgvector` | required; enabled by default; volumes: `data` 20 GB |
+| Chatwoot<br>`chatwoot` | required; enabled by default; volumes: `storage` 20 GB; links: `db` → `postgres`, `redis` → `redis`, `storage` → `storage`, `sendmail` → `opensmtpd` |
+| PostgreSQL<br>`postgres` | required; enabled by default; volumes: `data` 20 GB |
 | Redis<br>`redis` | required; enabled by default; volumes: `data` 5 GB |
 | Shared attachment storage<br>`storage` | required; enabled by default; volumes: `data` 25 GB |
 | OpenSMTPD<br>`opensmtpd` | optional; enabled by default |
