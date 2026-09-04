@@ -1,29 +1,138 @@
-name: example-stack
-icon: nginx
-title: Example Stack
-
-env:
-- name: APP_ENV
-  value: prod
+name: chatwoot
+icon: chatwoot
+title: Chatwoot
 
 services:
-- name: web
-  title: Web
-  service: nginx
+- name: chatwoot
+  title: Chatwoot
+  service: chatwoot
   required: true
   main: true
   replicas: 1
-  env:
-  - name: NGINX_VHOST_PRESET
-    value: html
+  derivatives:
+  - name: sidekiq
+    service: chatwoot-sidekiq
+    required: true
+    replicas: 1
+    deployment:
+      strategy: rolling
+      minReady: 10s
+      progressDeadline: 15m
+      shutdownGracePeriod: 120s
+    workloads:
+    - name: main
+      containers:
+      - name: chatwoot
+        resources:
+          request:
+            cpu: 500
+            memory: 1024
+          limit:
+            cpu: 2000
+            memory: 2000
+  links:
+  - name: db
+    service: postgres
+  - name: redis
+    service: redis
+  - name: storage
+    service: storage
+  - name: sendmail
+    service: opensmtpd
+  volumes:
+  - name: storage
+    size: 20
   workloads:
   - name: main
     containers:
-    - name: nginx
+    - name: chatwoot
+      resources:
+        request:
+          cpu: 500
+          memory: 1024
+        limit:
+          cpu: 2000
+          memory: 2000
+
+- name: postgres
+  title: PostgreSQL
+  service: postgres
+  required: true
+  env:
+  - name: POSTGRES_DB_EXTENSIONS
+    value: pg_stat_statements,pg_trgm,pgcrypto,vector
+  - name: POSTGRES_SHARED_PRELOAD_LIBRARIES
+    value: pg_stat_statements
+  volumes:
+  - name: data
+    size: 20
+  workloads:
+  - name: main
+    containers:
+    - name: postgresql
+      resources:
+        request:
+          cpu: 500
+          memory: 512
+        limit:
+          cpu: 2000
+          memory: 2048
+
+- name: redis
+  title: Redis
+  service: redis
+  required: true
+  env:
+  - name: REDIS_SAVE_TO_DISK
+    value: '1'
+  - name: REDIS_MAXMEMORY_POLICY
+    value: noeviction
+  volumes:
+  - name: data
+    size: 5
+  workloads:
+  - name: main
+    containers:
+    - name: redis
+      resources:
+        request:
+          cpu: 100
+          memory: 256
+        limit:
+          cpu: 500
+          memory: 512
+
+- name: storage
+  title: Shared attachment storage
+  service: nfs-provisioner
+  required: true
+  volumes:
+  - name: data
+    size: 25
+  workloads:
+  - name: main
+    containers:
+    - name: nfs
       resources:
         request:
           cpu: 100
           memory: 128
         limit:
-          cpu: 500
+          cpu: 1000
           memory: 512
+
+- name: opensmtpd
+  title: OpenSMTPD
+  service: opensmtpd
+  required: false
+  workloads:
+  - name: main
+    containers:
+    - name: opensmtpd
+      resources:
+        request:
+          cpu: 100
+          memory: 64
+        limit:
+          cpu: 300
+          memory: 256

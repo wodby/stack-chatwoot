@@ -1,47 +1,55 @@
-# Wodby stack template
+# Chatwoot stack for Wodby
 
-This repository is a starter for a Git-backed Wodby stack. Wodby imports
-`stack.yml` from the selected Git ref and creates a new stack revision every
-time you import or update it from Git.
+Deploy [Chatwoot](https://www.chatwoot.com/) on Kubernetes with Wodby.
 
-The included manifest defines a small stack with one required nginx service.
-Use it as a working baseline, then replace the service references and overrides
-with the services your stack should manage.
+<!-- wodby:generated:start -->
 
-## Files
+## Stack contract
 
-- `stack.yml` - the Wodby stack manifest.
+- [Chatwoot stack on Wodby](https://wodby.com/stacks/chatwoot)
+- [Browse Wodby application stacks](https://wodby.com/stacks)
+- [Wodby stack documentation](https://wodby.com/docs/2.0/stacks/)
+- [Stack manifest reference](https://wodby.com/docs/2.0/stacks/template/)
 
-## Start here
+## Service definitions
 
-1. Change `name`, `title`, and `icon` in `stack.yml`.
-2. Replace `services[].service` with the Wodby service name or versioned service
-   reference you want to include, for example `php` or `php:8.3`.
-3. Keep `services[].name` as the stack-local service name. It does not have to
-   match the referenced service name.
-4. Use `services[].links` to satisfy required links declared by service
-   manifests.
-5. Use `services[].workloads`, `services[].env`, `services[].volumes`,
-   `services[].configs`, and `services[].helm` only for stack-level overrides.
+- [Chatwoot service](https://github.com/wodby/service-chatwoot)
+- [PostgreSQL service](https://github.com/wodby/service-postgres)
+- [Redis service](https://github.com/wodby/service-redis)
+- [Ganesha NFS provisioner service](https://github.com/wodby/service-nfs-provisioner)
+- [OpenSMTPD service](https://github.com/wodby/service-opensmtpd)
 
-If you use this with the companion service template, import the service first
-and then change the stack service reference to `example-service:1.0`.
+## What's included
 
-## Multiple stacks
+| Component / service | Default configuration |
+| --- | --- |
+| Chatwoot<br>`chatwoot` | required; enabled by default; volumes: `storage` 20 GB; links: `db` → `postgres`, `redis` → `redis`, `storage` → `storage`, `sendmail` → `opensmtpd` |
+| PostgreSQL<br>`postgres` | required; enabled by default; volumes: `data` 20 GB |
+| Redis<br>`redis` | required; enabled by default; volumes: `data` 5 GB |
+| Shared attachment storage<br>`storage` | required; enabled by default; volumes: `data` 25 GB |
+| OpenSMTPD<br>`opensmtpd` | optional; enabled by default |
 
-A repository can contain multiple stacks. Put each stack in its own directory
-and add an `index.yml` at the repository root:
+Enabled optional services are selected by default but can be excluded when an
+app is created. Disabled optional services are available but not selected by
+default. Required services cannot be excluded.
 
-```yaml
-stacks:
-- api
-- worker
+## Validate the stack manifest
+
+```bash
+wodby stack validate-manifest stack.yml --org <org-id>
 ```
 
-Each listed directory must contain its own `stack.yml`.
+<!-- wodby:generated:end -->
 
-## References
+## Persistence and backups
 
-- Stack template reference: https://wodby.com/docs/2.0/stacks/template/
-- Stack services: https://wodby.com/docs/2.0/stacks/services/
-- Naming rules: https://wodby.com/docs/2.0/naming/
+Chatwoot's relational data is stored in PostgreSQL, queue data is persisted by
+Redis, and local attachments are written to the shared `/app/storage` volume.
+Back up both the PostgreSQL database and the NFS storage service to preserve a
+complete installation.
+
+For cloud object storage, attach a variable integration to Chatwoot with the
+environment variables required by its selected Active Storage provider.
+
+See the [Chatwoot self-hosting documentation](https://developers.chatwoot.com/self-hosted/)
+and the [Wodby stack documentation](https://wodby.com/docs/2.0/stacks/).
