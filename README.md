@@ -43,14 +43,17 @@ wodby stack validate-manifest stack.yml --org <org-id>
 
 ## First administrator
 
-After the first deployment, open the app's main domain. Chatwoot redirects to
-`/installation/onboarding`. Enter a name, company name, email, and password to
-create the super admin account and the first Chatwoot account, then sign in.
-Finish this right away: the page is open to anyone who can reach the address
-until it is submitted.
+Set **Admin email** on the Chatwoot service when you create the app. Replace the
+`admin@example.com` placeholder with your own address, because Chatwoot sends
+password resets to it.
 
-The page does not depend on the **Account signup** setting, which stays `false`
-by default, or on mail delivery. See the
+Wodby creates the super admin and the first Chatwoot account before the web
+server starts, so Chatwoot's onboarding page is never offered. Sign in at the
+app's main domain with that email and the `admin_password` token from the Chatwoot
+service's **Configuration > Tokens** tab. No mail is needed.
+
+An environment that already has a super admin keeps it. An environment upgraded
+before anyone finished onboarding gets its administrator the same way. See the
 [Chatwoot guide](https://wodby.com/docs/2.0/stacks/catalog/chatwoot/).
 
 ## Persistence and backups
