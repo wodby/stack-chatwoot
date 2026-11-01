@@ -47,10 +47,10 @@ Set **Admin email** on the Chatwoot service when you create the app. Replace the
 `admin@example.com` placeholder with your own address, because Chatwoot sends
 password resets to it.
 
-Wodby creates the super admin and the first Chatwoot account at the end of the
-deployment, and closes Chatwoot's onboarding page. Sign in at the app's main
-domain with that email and the `admin_password` token from the Chatwoot service's
-**Configuration > Tokens** tab. No mail is needed.
+Wodby creates the super admin and the first Chatwoot account before the web
+server starts, so Chatwoot's onboarding page is never offered. Sign in at the
+app's main domain with that email and the `admin_password` token from the Chatwoot
+service's **Configuration > Tokens** tab. No mail is needed.
 
 An environment that already has a super admin keeps it. An environment upgraded
 before anyone finished onboarding gets its administrator the same way. See the
