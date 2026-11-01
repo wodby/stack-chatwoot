@@ -41,6 +41,18 @@ wodby stack validate-manifest stack.yml --org <org-id>
 
 <!-- wodby:generated:end -->
 
+## First administrator
+
+After the first deployment, open the app's main domain. Chatwoot redirects to
+`/installation/onboarding`. Enter a name, company name, email, and password to
+create the super admin account and the first Chatwoot account, then sign in.
+Finish this right away: the page is open to anyone who can reach the address
+until it is submitted.
+
+The page does not depend on the **Account signup** setting, which stays `false`
+by default, or on mail delivery. See the
+[Chatwoot guide](https://wodby.com/docs/2.0/stacks/catalog/chatwoot/).
+
 ## Persistence and backups
 
 Chatwoot's relational data is stored in PostgreSQL, queue data is persisted by
